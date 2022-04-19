@@ -19,7 +19,8 @@ function getUserById(id){
 }
 
 function getUserByMail(email){
-    return User.findOne({where: {emailAddress: email}});
+    console.log("email", email)
+    return User.findOne({where: {emailAddress: email}, raw: true, returning: true});
 }
 
 function deleteById(id){

@@ -16,8 +16,8 @@ async function sendMail(to, subject, text, html) {
     // port: 587,
     // secure: false, // true for 465, false for other ports
     auth: {
-      user: process.env.MAIL_USER, // generated ethereal user
-      pass: process.env.MAIL_PASSWORD, // generated ethereal password
+      user: "jaykhairnar99@gmail.com", // generated ethereal user
+      pass: "Jk@12345", // generated ethereal password
     },
   });
   transporter.verify().then(console.log).catch((error)=>{console.log(error)});
@@ -30,7 +30,6 @@ async function sendMail(to, subject, text, html) {
     text: text, // plain text body
     html: html, // html body
   });
-  console.log("after sending mail" + info);
   
   return info;
 
