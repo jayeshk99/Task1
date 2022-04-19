@@ -7,7 +7,7 @@ const userDao = {
     deleteById,
     createUser,
     updateUser,
-
+    updateUserOneField
 }
 
 function getAllUsers (){
@@ -41,6 +41,9 @@ function updateUser(user, id){
         isVerified: user.isVerified
     };
     return User.update(updatedUser, {where: {id: id}});   
+}
+function updateUserOneField(changeObj, id){
+    return User.update(changeObj, {where: {id: id}})
 }
 
 module.exports = userDao;

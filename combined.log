@@ -884,3 +884,6 @@
 {"level":"info","message":"Database connected...","service":"user-service"}
 {"level":"info","message":"Database connected...","service":"user-service"}
 {"level":"info","message":"Database connected...","service":"user-service"}
+{"level":"info","message":"Database connected...","service":"user-service"}
+{"level":"info","message":"Database connected...","service":"user-service"}
+{"level":"error","message":"Error: SequelizeConnectionError: password authentication failed for user \"postgres\"","service":"user-service"}

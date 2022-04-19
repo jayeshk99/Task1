@@ -1,8 +1,7 @@
 const {Router} = require("express");
 
 const userRoute = Router();
-const {registerUser, verifyEmail, getUsers,deleteUser, loginUser} = require('../controllers/userController');
-const { updateUser } = require("../dao/user.dao");
+const {registerUser, verifyEmail, getUsers,deleteUser, loginUser, updateProfile} = require('../controllers/userController');
 const logger = require("../utils/logger");
 
 
@@ -44,20 +43,42 @@ userRoute.route('/login').post(async (req, res)=>{
         console.log("userbody", req.body)
         const result = await loginUser(req.body);
         if(result && result?.statusCode === 401) return res.json({message: result.message})
-        else if(result && result?.statusCode === 200) return res.json({message: result.message, details: result.details})
+        else if(result && result?.statusCode === 200) {
+
+            return res.json({message: result.message, details: result.details})
+        }
     } catch (error) {
         throw error
     }
 })
 
-// userRoute.route('/updateprofile/firstname').post(async (req, res)=>{
-//     try {
+userRoute.route('/updateprofile/firstname/:id').post(async (req, res)=>{
+    try {
+        let changeObj = {firstName: req.body.newFirstName}
+        const result = await updateProfile(changeObj, req.params.id);
+    } catch (error) {
+        throw error;
+    }
+})
 
-//         const result = await updateUser();
-//     } catch (error) {
-//         throw error;
-//     }
-// })
+userRoute.route('/updateprofile/lastname/:id').post(async (req, res)=>{
+    try {
+        let changeObj = {lastName: req.body.newLastName}
+        const result = await updateProfile(changeObj, req.params.id );
+    } catch (error) {
+        throw error;
+    }
+})
+
+userRoute.route('/updateprofile/phonenumber/:id').post(async (req, res)=>{
+    try {
+        let changeObj = {phoneNumber: req.body.newPhoneNumber}
+
+        const result = await updateProfile(changeObj, req.params.id);
+    } catch (error) {
+        throw error;
+    }
+})
 
 userRoute.route('/deleteuser/:id').delete(async (req, res)=>{
     try {

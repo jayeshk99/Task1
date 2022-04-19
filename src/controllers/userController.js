@@ -7,12 +7,14 @@ const {
     getUserByMail,
     deleteById,
     createUser,
-    updateUser,} = require('../dao/user.dao') 
+    updateUser,
+    updateUserOneField} = require('../dao/user.dao') 
 const sendMail = require('../utils/nodemailer')
 const {newToken, verifyToken} = require('../utils/jwt');
 const logger = require('../utils/logger');
 const {encryptPassword, decryptPassword} = require('../utils/encrypt');
 const res = require('express/lib/response');
+const redis = require('../config/redis')
 
 
 const registerUser =async (data)=>{
@@ -90,7 +92,7 @@ const loginUser =async (data) =>{
         if(!user.isVerified) return {message: "Verify your account on the link send to your registered email address", statusCode:401}
         else if(!decryptPassword(data.pass, user.password)) return {message: "Incorrect password", statusCode:401}
         let token = newToken(user);
-        // localStorage.setItem("token", JSON.stringify(token));
+        redis.get('')
         return {message: "Login succesful", detials: user, statusCode: 200};
 
     } catch (error) {
@@ -98,4 +100,14 @@ const loginUser =async (data) =>{
     }
 }
 
-module.exports = {registerUser, verifyEmail, getUsers, deleteUser, loginUser};
+const updateProfile = async (changeObj, id) =>{
+    try {
+        let user = await updateUserOneField(changeObj, id);
+        return {message: `Updated Succesfully`, detials: user}   
+    } catch (error) {
+        throw error;
+    }
+    
+}
+
+module.exports = {registerUser, verifyEmail, getUsers, deleteUser, loginUser, updateProfile};
