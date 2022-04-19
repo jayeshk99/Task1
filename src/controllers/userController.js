@@ -19,7 +19,8 @@ const registerUser =async (data)=>{
             return ("user already exists");                     
         }else{
             console.log("before create user")
-            user = await createUser(data);          
+            user = await createUser(data);   
+            logger.info(user);       
             let token = newToken(user);
             let to = data.emailAddress;
             let subject = "Hello, regarding verification of your account";
@@ -30,7 +31,7 @@ const registerUser =async (data)=>{
             return user;
         }
     } catch (error) {
-        console.log("inside error" + error)
+        logger.error(error);
         return error;
     }
 }
