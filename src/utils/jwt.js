@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const newToken = (user) => {
-    return jwt.sign({ user: user }, "secretjwtkey", { expiresIn: 60 * 60 })
+    return jwt.sign({ user: user }, "secretjwtkey", { expiresIn: '1h' })
   }
   
   const verifyToken = (token) => {
