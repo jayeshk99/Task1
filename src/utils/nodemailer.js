@@ -16,8 +16,8 @@ async function sendMail(to, subject, text, html) {
     // port: 587,
     // secure: false, // true for 465, false for other ports
     auth: {
-      user: "jaykhairnar99@gmail.com", // generated ethereal user
-      pass: "Jk@12345", // generated ethereal password
+      user: process.env.SMTP_MAIL, // generated ethereal user
+      pass: process.env.SMTP_MAIL_PASS, // generated ethereal password
     },
   });
   transporter.verify().then(console.log).catch((error)=>{console.log(error)});
