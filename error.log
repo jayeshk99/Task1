@@ -13,3 +13,6 @@
 {"level":"error","service":"user-service"}
 {"level":"error","name":"SequelizeDatabaseError","original":{"code":"42703","file":"parse_relation.c","length":105,"line":"3599","name":"error","position":"27","routine":"errorMissingColumn","severity":"ERROR","sql":"DELETE FROM \"users\" WHERE \"email\" = 'jayeshk425@gmail.com'"},"parameters":{},"parent":{"code":"42703","file":"parse_relation.c","length":105,"line":"3599","name":"error","position":"27","routine":"errorMissingColumn","severity":"ERROR","sql":"DELETE FROM \"users\" WHERE \"email\" = 'jayeshk425@gmail.com'"},"service":"user-service","sql":"DELETE FROM \"users\" WHERE \"email\" = 'jayeshk425@gmail.com'"}
 {"level":"error","message":"Error: SequelizeConnectionError: password authentication failed for user \"postgres\"","service":"user-service"}
+{"level":"error","message":"Error: SequelizeConnectionError: password authentication failed for user \"postgres\"","service":"user-service"}
+{"level":"error","message":"Error: SequelizeConnectionError: password authentication failed for user \"postgres\"","service":"user-service"}
+{"level":"error","message":"Error: SequelizeConnectionError: password authentication failed for user \"postgres\"","service":"user-service"}

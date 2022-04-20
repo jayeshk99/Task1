@@ -11,7 +11,7 @@ const userDao = {
 }
 
 function getAllUsers (){
-    return User.findAll();
+    return User.findAll({raw: true, returning: true});
 }
 
 function getUserById(id){

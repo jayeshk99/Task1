@@ -1,7 +1,7 @@
 const {Router} = require("express");
 
 const userRoute = Router();
-const {registerUser, verifyEmail, getUsers,deleteUser, loginUser, updateProfile} = require('../controllers/userController');
+const {registerUser, verifyEmail, getUsers,deleteUser, loginUser, updateProfile, changePassword, forgetPassword, verifyUser} = require('../controllers/userController');
 const logger = require("../utils/logger");
 
 
@@ -22,9 +22,9 @@ userRoute.route('/register').post(async (req, res)=>{
 userRoute.route('/allusers').get( (req, res)=>{
     try {
         const users = getUsers();
-        return res.send(users);
+        return res.json({users: users});
     } catch (error) {
-        res.send(error);
+        throw error;
     }
 })
 
@@ -56,6 +56,7 @@ userRoute.route('/updateprofile/firstname/:id').post(async (req, res)=>{
     try {
         let changeObj = {firstName: req.body.newFirstName}
         const result = await updateProfile(changeObj, req.params.id);
+        return res.send(result);
     } catch (error) {
         throw error;
     }
@@ -65,6 +66,7 @@ userRoute.route('/updateprofile/lastname/:id').post(async (req, res)=>{
     try {
         let changeObj = {lastName: req.body.newLastName}
         const result = await updateProfile(changeObj, req.params.id );
+        return res.json({user: result});
     } catch (error) {
         throw error;
     }
@@ -75,11 +77,39 @@ userRoute.route('/updateprofile/phonenumber/:id').post(async (req, res)=>{
         let changeObj = {phoneNumber: req.body.newPhoneNumber}
 
         const result = await updateProfile(changeObj, req.params.id);
+        return res.json({user: result})
     } catch (error) {
         throw error;
     }
 })
 
+userRoute.route('/updateprofile/changepassword').post(async (req, res)=>{
+    try {
+        let result = await changePassword(req.body);
+        return res.json({response: result})
+    } catch (error) {
+        throw error;
+    }
+})
+
+userRoute.route('/forgetpassword').post(async (req, res)=>{
+    try {
+        let result = await forgetPassword(req.body.emailAddress);
+        return res.json({result});
+    } catch (error) {
+        throw error;
+    }
+})
+
+userRoute.route('/resetpassword/:token').get(async (req, res)=>{
+    try {
+        let result =await verifyUser(req.params.token); 
+        
+        return res.send(result);       
+    } catch (error) {
+        throw error;
+    }
+})
 userRoute.route('/deleteuser/:id').delete(async (req, res)=>{
     try {
         let user = deleteUser(req.params.id);
