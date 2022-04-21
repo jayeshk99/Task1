@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const Sequelize = require('sequelize');
 
 const db = new Sequelize("userdb","postgres", "Jk@12345", {

@@ -1,7 +1,7 @@
 const {Router} = require("express");
 
 const userRoute = Router();
-const {registerUser, verifyEmail, getUsers,deleteUser, loginUser, updateProfile, changePassword, forgetPassword, verifyUser} = require('../controllers/userController');
+const {registerUser, verifyEmail, getUsers,deleteUser, loginUser, updateProfile, changePassword, forgetPassword, verifyUser, resetPassword} = require('../controllers/userController');
 const logger = require("../utils/logger");
 const auth = require('../middlewares/authentication');
 
@@ -42,8 +42,8 @@ userRoute.route('/login').post(async (req, res)=>{
     try {
         console.log("userbody", req.body)
         const result = await loginUser(req.body);
-        if(result && result?.statusCode === 401) return res.json({message: result.message})
-        else if(result && result?.statusCode === 200) {
+        if(result && result.statusCode === 401) return res.json({message: result.message})
+        else if(result && result.statusCode === 200) {
 
             return res.json({message: result.message, details: result.details})
         }
@@ -54,38 +54,18 @@ userRoute.route('/login').post(async (req, res)=>{
 
 userRoute.route('/updateprofile').patch(auth, async (req, res)=>{
     try {
-        console.log("req.user",req.user);
-        const result = await updateProfile(req.body, req.user.id);
+        // console.log("req.user",req.user);
+        const result = await updateProfile(req && req.body, req && req.user && req.user.id);
         return res.send(result);
     } catch (error) {
         throw error;
     }
 })
 
-// userRoute.route('/updateprofile/lastname/:id').post(auth, async (req, res)=>{
-//     try {
-//         let changeObj = {lastName: req.body.newLastName}
-//         const result = await updateProfile(changeObj, req.params.id );
-//         return res.json({user: result});
-//     } catch (error) {
-//         throw error;
-//     }
-// })
-
-// userRoute.route('/updateprofile/phonenumber/:id').post(async (req, res)=>{
-//     try {
-//         let changeObj = {phoneNumber: req.body.newPhoneNumber}
-
-//         const result = await updateProfile(changeObj, req.params.id);
-//         return res.json({user: result})
-//     } catch (error) {
-//         throw error;
-//     }
-// })
 
 userRoute.route('/changepassword').post(auth, async (req, res)=>{
     try {
-        let result = await changePassword(req.body);
+        let result = await changePassword(req && req.body);
         return res.json({response: result})
     } catch (error) {
         throw error;
@@ -94,18 +74,20 @@ userRoute.route('/changepassword').post(auth, async (req, res)=>{
 
 userRoute.route('/forgetpassword').post(async (req, res)=>{
     try {
-        let result = await forgetPassword(req.body.emailAddress);
+        let result = await forgetPassword(req && req.body && req.body.emailAddress);
         return res.json({result});
     } catch (error) {
         throw error;
     }
 })
 
-userRoute.route('/resetpassword/:token').get(async (req, res)=>{
+userRoute.route('/resetpassword').patch(auth, async (req, res)=>{
     try {
-        let result =await verifyUser(req.params.token); 
-        
-        return res.send(result);       
+        // let result =await verifyUser(req.user.id); 
+        let userId = req.user.id;
+        console.log(req.user);
+        let result = await resetPassword( req && req.body, userId);
+        return res.json(result);       
     } catch (error) {
         throw error;
     }

@@ -4,8 +4,8 @@ const {verifyToken} = require('../utils/jwt');
 
 
 module.exports = async (req, res, next) => {
-
-  if (!req.headers.authorization)
+  try {
+    if (!req.headers.authorization)
     return res.json({message: "Token is not provided! Please login "});
 
   const bearerToken = req.headers.authorization
@@ -14,13 +14,14 @@ module.exports = async (req, res, next) => {
 
   const token = bearerToken.split(" ")[1]
 
-  let user
-  try {
-    user = await verifyToken(token);
+
+    let user = await verifyToken(token);
+
+    req.user = user.user
+
+    next()
   } catch (error) {
     return res.status(401).send({ message: "token is not valid" })
   }
-  req.user = user.user
 
-  next()
 }

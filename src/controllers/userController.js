@@ -15,7 +15,7 @@ const {newToken, verifyToken} = require('../utils/jwt');
 const logger = require('../utils/logger');
 const {encryptPassword, decryptPassword} = require('../utils/encrypt');
 const res = require('express/lib/response');
-const redis = require('../config/redis')
+
 
 
 const registerUser =async (data)=>{
@@ -65,7 +65,7 @@ const verifyEmail = async (token)=>{
         return(false)
     }else {
         user.isVerified = true;
-        console.log(user.emailAddress);
+        // console.log(user.emailAddress);
         console.log("userafterjwt", user);
         let result = User.update(user, {where: {emailAddress: user.emailAddress}});
         return true;
@@ -86,8 +86,8 @@ const loginUser =async (data) =>{
 
     try {
 
-        console.log("userName",  data.user);
-        let email = data.user;
+        // console.log("userName",  data.user);
+        let email = data && data.user;
         let user =  await getUserByMail(email);
 
         if(!user.isVerified) return {message: "Verify your account on the link send to your registered email address", statusCode:401}
@@ -116,11 +116,11 @@ const updateProfile = async (data, id) =>{
 
 const changePassword = async (data)=>{
     try {
-        let user = await getUserByMail(data.emailAddress);
+        let user = await getUserByMail(data && data.emailAddress);
         
 
-        if(!decryptPassword(data.currentPassword, user.password)) return {message: "Incorrect current password"}
-        else if(decryptPassword(data.currentPassword, user.password)) {
+        if(!decryptPassword(data && data.currentPassword, user && user.password)) return {message: "Incorrect current password"}
+        else if(decryptPassword(data && data.currentPassword, user && user.password)) {
             user.password = encryptPassword(data.newPassword);
             return {message: "Password changed succesfully", detials: user};
         }
@@ -145,17 +145,29 @@ const forgetPassword = async (email)=>{
     }
 }
 
-const verifyUser = async (token)=>{
+const resetPassword = async (data, id)=>{
     try {
-        let result = await verifyToken(token);
-        let user = result.user;
-        let newPassword = `${user.firstName}@123`;
-        user.password = encryptPassword(newPassword);
-        return {message: `Your new password is < ${newPassword} >. Change your password after you login with this one`}
+        data.password = encryptPassword(data && data.password);
+
+        let result = updateUserOneField(data, id);
+        if(result) return {message: "Password changed succesfully"}
+        else return {message: "Could not change password"}
+        
     } catch (error) {
         throw error;
     }
 }
+// const verifyUser = async (token)=>{
+//     try {
+//         let result = await verifyToken(token);
+//         let user = result.user;
+//         let newPassword = `${user.firstName}@123`;
+//         user.password = encryptPassword(newPassword);
+//         return {message: `Your new password is < ${newPassword} >. Change your password after you login with this one`}
+//     } catch (error) {
+//         throw error;
+//     }
+// }
 module.exports = {
       registerUser,
       verifyEmail,
@@ -165,5 +177,5 @@ module.exports = {
       updateProfile, 
       changePassword, 
       forgetPassword, 
-      verifyUser
+      resetPassword
     };
