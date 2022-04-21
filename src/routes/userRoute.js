@@ -54,6 +54,7 @@ userRoute.route('/login').post(async (req, res)=>{
 
 userRoute.route('/updateprofile').patch(auth, async (req, res)=>{
     try {
+        console.log("req.user",req.user);
         const result = await updateProfile(req.body, req.user.id);
         return res.send(result);
     } catch (error) {
