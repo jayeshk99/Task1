@@ -93,7 +93,7 @@ const loginUser =async (data) =>{
         if(!user.isVerified) return {message: "Verify your account on the link send to your registered email address", statusCode:401}
         else if(!decryptPassword(data.pass, user.password)) return {message: "Incorrect password", statusCode:401}
         let token = newToken(user);
-        redis.get('')
+        user.token = token;
         return {message: "Login succesful", details: user, statusCode: 200};
 
     } catch (error) {
@@ -101,13 +101,13 @@ const loginUser =async (data) =>{
     }
 }
 
-const updateProfile = async (changeObj, id) =>{
+const updateProfile = async (data, id) =>{
     try {
         let user = await getUserById(id);
         console.log("user", user);
         // user.firstName = changeObj.firstName;
-        let result = await updateUserOneField(changeObj, id);
-        return {message: `Updated Succesfully`, details: user}   
+        let result = await updateUserOneField(data, id);
+        return {message: `Updated Succesfully`, details: result}   
     } catch (error) {
         throw error;
     }
