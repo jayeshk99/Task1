@@ -10,29 +10,29 @@ const userDao = {
     updateUserOneField
 }
 
-function getAllUsers (){
+const getAllUsers = ()=>{
     return User.findAll({raw: true, returning: true});
 }
 
-function getUserById(id){
+const getUserById = (id)=>{
     return User.findByPk(id);
 }
 
-function getUserByMail(email){
+const getUserByMail = (email)=>{
     console.log("email", email)
     return User.findOne({where: {emailAddress: email}, raw: true, returning: true});
 }
 
-function deleteById(id){
+const deleteById = (id)=>{
     return User.destroy({where: {id: id}});
 }
 
-function createUser(user){
+const createUser = (user)=>{
     let newUser = new User(user);
     return newUser.save();
 }
 
-function updateUser(user, id){
+const updateUser = (user, id)=>{
     let updatedUser = {
         firstName: user.firstName,
         lastName: user.lastName,
@@ -42,7 +42,7 @@ function updateUser(user, id){
     };
     return User.update(updatedUser, {where: {id: id}});   
 }
-function updateUserOneField(changeObj, id){
+const updateUserOneField = (changeObj, id)=>{
     return User.update(changeObj, {where: {id: id}})
 }
 

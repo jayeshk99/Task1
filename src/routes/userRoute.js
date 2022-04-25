@@ -22,6 +22,7 @@ userRoute.route('/register').post(async (req, res)=>{
 userRoute.route('/allusers').get(auth, async (req, res)=>{
     try {
         const users =await getUsers();
+        if(!users) return res.json({message: "Could not fetch the request"})
         return res.json({users: users});
     } catch (error) {
         throw error;
@@ -30,7 +31,7 @@ userRoute.route('/allusers').get(auth, async (req, res)=>{
 
 userRoute.route('/verify/:token').get(async (req, res)=>{
     try {
-        const user = verifyEmail(req.params.token); 
+        const user =await verifyEmail(req.params.token); 
         if(user) return res.send("Succesfully Verified")
         else return res.send("Invalid token")      
     } catch (error) {
@@ -56,6 +57,7 @@ userRoute.route('/updateprofile').patch(auth, async (req, res)=>{
     try {
         // console.log("req.user",req.user);
         const result = await updateProfile(req && req.body, req && req.user && req.user.id);
+        if(!result) return res.json({message: "Update profile failed"})
         return res.send(result);
     } catch (error) {
         throw error;
@@ -66,6 +68,7 @@ userRoute.route('/updateprofile').patch(auth, async (req, res)=>{
 userRoute.route('/changepassword').post(auth, async (req, res)=>{
     try {
         let result = await changePassword(req && req.body);
+        if(!result) return res.json({message: "Change password failed"})
         return res.json({response: result})
     } catch (error) {
         throw error;
@@ -85,8 +88,8 @@ userRoute.route('/resetpassword').patch(auth, async (req, res)=>{
     try {
         // let result =await verifyUser(req.user.id); 
         let userId = req.user.id;
-        console.log(req.user);
         let result = await resetPassword( req && req.body, userId);
+        if(!result) return res.json({message: "Reset password failed"})
         return res.json(result);       
     } catch (error) {
         throw error;
@@ -94,9 +97,8 @@ userRoute.route('/resetpassword').patch(auth, async (req, res)=>{
 })
 userRoute.route('/deleteuser').delete(auth, async (req, res)=>{
     try {
-        console.log(req.user);
-        let user = deleteUser(req.user.id);
-        
+        let user =await deleteUser(req.user.id);
+        if(!user) return res.status(400).json({message: "User not deleted", details: ""})
         return res.status(200).json({message: "user deleted", details: user});
     } catch (error) {
         throw error;

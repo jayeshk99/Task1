@@ -31,7 +31,7 @@ const registerUser =async (data)=>{
             data.password = hashedPass;
             user = await createUser(data);   
             logger.info(user);       
-
+            if(!user) return {statusCode: 400, res: "", message: "User not created"}
             let token = newToken(user);
             let to = data.emailAddress;
             let subject = "Hello, regarding verification of your account";
@@ -51,7 +51,8 @@ const registerUser =async (data)=>{
 const getUsers = async ()=>{
 
     try {
-        let users = getAllUsers();
+        let users =await getAllUsers();
+        if(!users) return false;
         return users;        
     } catch (error) {
         throw error
@@ -67,7 +68,7 @@ const verifyEmail = async (token)=>{
         user.isVerified = true;
         // console.log(user.emailAddress);
         console.log("userafterjwt", user);
-        let result = User.update(user, {where: {emailAddress: user.emailAddress}});
+        let result =await User.update(user, {where: {emailAddress: user.emailAddress}});
         return true;
     }
 }
@@ -75,6 +76,7 @@ const verifyEmail = async (token)=>{
 const deleteUser = async (id)=>{
     try {
         let user = await deleteById(id);
+        if(!user) return false;
         return user;
         
     } catch (error) {
@@ -107,6 +109,7 @@ const updateProfile = async (data, id) =>{
         console.log("user", user);
         // user.firstName = changeObj.firstName;
         let result = await updateUserOneField(data, id);
+        if(!result) return {message: "Updation failed ", details: ""}
         return {message: `Updated Succesfully`, details: result}   
     } catch (error) {
         throw error;
@@ -149,7 +152,7 @@ const resetPassword = async (data, id)=>{
     try {
         data.password = encryptPassword(data && data.password);
 
-        let result = updateUserOneField(data, id);
+        let result =await updateUserOneField(data, id);
         if(result) return {message: "Password changed succesfully"}
         else return {message: "Could not change password"}
         

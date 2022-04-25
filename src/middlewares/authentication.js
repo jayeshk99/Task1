@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     if (!req.headers.authorization)
     return res.json({message: "Token is not provided! Please login "});
 
-  const bearerToken = req.headers.authorization
+  const bearerToken = req?.headers?.authorization
   if (!bearerToken)
   return res.json({message: "Token is not provided! Please login "});
 
@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
 
 
     let user = await verifyToken(token);
-
+    if(!user) return res.json({message: "Unable to fetch user from token"})
     req.user = user.user
 
     next()
